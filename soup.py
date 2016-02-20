@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import argparse
+import argcomplete
 import os
 
 import pysoup
@@ -17,6 +18,7 @@ def main():
     cmd_install.add_argument('-g', '--global-installation', help='install dependencies as global', action='store_true')
     cmd_install.add_argument('-r', '--require-custom-file', help='use custom yaml file', default='soup.yaml')
 
+    argcomplete.autocomplete(parser)
     args = parser.parse_args()
 
     if args.command == 'install':
@@ -25,3 +27,6 @@ def main():
         is_global = args.global_installation
         is_quiet = args.quiet
         pysoup.PySoup.start_with_args('install', cwd, target_file, is_global, is_quiet)
+
+if __name__ == '__main__':
+    main()

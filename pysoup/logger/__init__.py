@@ -1,5 +1,6 @@
 import os.path
 
+import pysoup.utils.assets
 
 class Logger(object):
 
@@ -18,4 +19,5 @@ class Logger(object):
     def dump_to_file(self):
         if self._log != '':
             with open(os.path.join(self._cwd, 'soup.log'), 'wb') as f:
+                f.write(pysoup.utils.assets.LOGO)
                 f.write(self._log)

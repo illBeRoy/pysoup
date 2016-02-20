@@ -5,6 +5,7 @@ import os.path
 from pysoup.display._display import Display, DisplayPipe
 
 import pysoup.utils
+import pysoup.utils.assets
 
 class InteractiveDisplay(Display):
 
@@ -56,4 +57,4 @@ class InteractiveDisplay(Display):
         return (self._blessings.move_up * len(self._lines)) + self._blessings.clear_eos
 
     def _print_logo(self):
-        print pysoup.utils.get_asset('logo')
+        print pysoup.utils.assets.LOGO

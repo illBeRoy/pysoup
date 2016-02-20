@@ -1,0 +1,8 @@
+name: 'soup_demo_project'
+author: 'Roy Sommer'
+repository: 'https://www.github.com/illberoy/pysoup'
+dependencies:
+  Twisted: '15.5.0'
+  blessings: '1.6.0'
+  PyYAML: '3.11'
+  

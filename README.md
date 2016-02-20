@@ -47,7 +47,7 @@ Each dependency should have one of the following versioning notation as its valu
 
 ### disclaimer
 
-The project is still in its (very) early development, so unexpected behavior might occure (if your cat eats you mouse suddenly, that might, or might not have happened because you've used pysoup). Proceed with caution!
+The project is still in its (very) early development, so unexpected behavior might occure (if your cat eats your mouse all of a sudden, that might, or might not have happened because you've used pysoup). Proceed with caution!
 
 ```
 

@@ -5,7 +5,7 @@ import os
 import pysoup
 
 
-if __name__ == '__main__':
+def main():
 
     parser = argparse.ArgumentParser()
 

@@ -12,12 +12,11 @@ class Logger(object):
         self._log += '{0}\n'.format(text)
 
     def log_dependency_results(self, failed_dependencies):
-        self.log('Dependency installation failure:')
         for dependency in failed_dependencies:
-            self.log(dependency)
+            self.log('could not install {0}'.format(dependency))
 
-    def dump_to_file(self):
+    def dump_to_file(self, filename='soup.log'):
         if self._log != '':
-            with open(os.path.join(self._cwd, 'soup.log'), 'wb') as f:
+            with open(os.path.join(self._cwd, filename), 'wb') as f:
                 f.write(pysoup.utils.assets.LOGO)
-                f.write(self._log)
+                f.write('\n{0}'.format(self._log))

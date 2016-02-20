@@ -60,6 +60,57 @@ class PySoup(object):
             self._logger.log_dependency_results(failed_dependencies)
 
         self._logger.dump_to_file()
+        yield 'completed'
+
+    @defer.inlineCallbacks
+    def init_new_project(self, configuration, target_config_file):
+        if os.path.exists(target_config_file):
+            self._display_pipes['sys'].notify('target file already exists, aborting...')
+        else:
+            yield self.set_project_attributes(configuration, target_config_file)
+
+        yield 'completed'
+
+    @defer.inlineCallbacks
+    def set_project_attributes(self, configuration, target_config_file):
+        new_config = {key: value for key, value in configuration.iteritems() if value}
+
+        try:
+            old_config = self._parser.parse_file(target_config_file)
+
+            for key, value in old_config.iteritems():
+                if not new_config.has_key(key):
+                    new_config[key] = value
+        except:
+            pass
+
+        self._parser.dump_to_file(new_config, target_config_file)
+        self._display_pipes['sys'].success('soup configuration was updated successfuly!')
+
+        yield 'completed'
+
+    @defer.inlineCallbacks
+    def add_dependency(self, configuration, target_config_file):
+        try:
+            target_config = self._parser.parse_file(target_config_file)
+
+            try:
+                target_dependencies = target_config['dependencies']
+            except:
+                target_dependencies = {}
+
+            for dependency, version in configuration['dependencies'].iteritems():
+                target_dependencies[dependency] = version
+
+            target_config['dependencies'] = target_dependencies
+
+            self._parser.dump_to_file(target_config, target_config_file)
+
+            self._display_pipes['sys'].success('dependency added successfully!')
+        except:
+            self._display_pipes['sys'].notify('soup configuration does not exists, aborting...')
+
+        yield 'completed'
 
     def _add_display_pipe(self, pipe_name):
         self._display_pipes[pipe_name] = self._display.create_pipe()
@@ -75,7 +126,7 @@ class PySoup(object):
         return pysoup.pip.Pip(self._add_display_pipe('pip'), venv=self._venv)
 
     @staticmethod
-    def start_with_args(command, cwd, target_config_file, is_global, is_silent):
+    def start_with_args(command, cwd, target_config_file, is_global=False, is_silent=False, custom_configuration=None):
         if is_silent:
             display = pysoup.display.DisplayAdapter.create_silent_display()
         else:
@@ -83,11 +134,27 @@ class PySoup(object):
 
         soup = PySoup(display, cwd, is_global)
 
+        exec_command = None
+
         if command == 'install':
             file_path = os.path.join(cwd, target_config_file)
             exec_command = soup.install_from_file(file_path)
-            exec_command.addCallbacks(PySoup._on_soup_callback, PySoup._on_soup_errback)
-            reactor.run()
+
+        elif command == 'init':
+            file_path = os.path.join(cwd, target_config_file)
+            exec_command = soup.init_new_project(custom_configuration, file_path)
+
+        elif command == 'set':
+            file_path = os.path.join(cwd, target_config_file)
+            exec_command = soup.set_project_attributes(custom_configuration, file_path)
+
+        elif command == 'add':
+            file_path = os.path.join(cwd, target_config_file)
+            exec_command = soup.add_dependency(custom_configuration, file_path)
+
+
+        exec_command.addCallbacks(PySoup._on_soup_callback, PySoup._on_soup_errback)
+        reactor.run()
 
     @staticmethod
     def _on_soup_callback(result):

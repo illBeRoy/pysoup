@@ -2,6 +2,7 @@
 import argparse
 import argcomplete
 import os
+import getpass
 
 import pysoup
 
@@ -18,6 +19,22 @@ def main():
     cmd_install.add_argument('-g', '--global-installation', help='install dependencies as global', action='store_true')
     cmd_install.add_argument('-r', '--require-custom-file', help='use custom yaml file', default='soup.yaml')
 
+    cmd_init = commands.add_parser('init', help='create a new yaml file for your project')
+    cmd_init.add_argument('-n', '--name', help='project name', required=True)
+    cmd_init.add_argument('-v', '--version', help='project version', required=False, default='0.0.1')
+    cmd_init.add_argument('-a', '--author', help='project author', required=False, default=getpass.getuser())
+    cmd_init.add_argument('-r', '--repository', help='project repository', required=False, default='')
+
+    cmd_add = commands.add_parser('add', help='add a dependency to the yaml file')
+    cmd_add.add_argument('name', help='name of the dependency')
+    cmd_add.add_argument('version', help='version of the dependency')
+
+    cmd_set = commands.add_parser('set', help='set a property in the yaml file')
+    cmd_set.add_argument('-n', '--name', help='project name', required=False, default='')
+    cmd_set.add_argument('-v', '--version', help='project version', required=False, default='')
+    cmd_set.add_argument('-a', '--author', help='project author', required=False, default='')
+    cmd_set.add_argument('-r', '--repository', help='project repository', required=False, default='')
+
     argcomplete.autocomplete(parser)
     args = parser.parse_args()
 
@@ -27,6 +44,39 @@ def main():
         is_global = args.global_installation
         is_quiet = args.quiet
         pysoup.PySoup.start_with_args('install', cwd, target_file, is_global, is_quiet)
+
+    if args.command == 'init' or args.command == 'set':
+        cwd = os.getcwd()
+        target_file = 'soup.yaml'
+        is_global = False
+        is_quiet = args.quiet
+        custom_configuration = {'name': args.name,
+                                'version': args.version,
+                                'author': args.author,
+                                'repository': args.repository}
+
+        if custom_configuration.values() == ['' for i in xrange(len(custom_configuration))]:
+            print 'at least one argument is required.\nsee: soup {0} -h'.format(args.command)
+        else:
+            pysoup.PySoup.start_with_args(args.command,
+                                          cwd,
+                                          target_file,
+                                          is_global,
+                                          is_quiet,
+                                          custom_configuration=custom_configuration)
+
+    if args.command == 'add':
+        cwd = os.getcwd()
+        target_file = 'soup.yaml'
+        is_global = False
+        is_quiet = args.quiet
+        custom_configuration = {'dependencies': {args.name: args.version}}
+        pysoup.PySoup.start_with_args('add',
+                                      cwd,
+                                      target_file,
+                                      is_global,
+                                      is_quiet,
+                                      custom_configuration=custom_configuration)
 
 if __name__ == '__main__':
     main()

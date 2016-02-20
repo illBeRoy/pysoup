@@ -43,7 +43,13 @@ Each dependency should have one of the following versioning notation as its valu
 
 ### usage
 
-`$ soup install` - read the configuration in the current working directory, create a virtualenv at that directory and install the dependencies specified.
+`$ soup init` - creates a new soup.yaml configuration file in the current working directory, with the given parameters.
+
+`$ soup set` - change or set the attribute of an existing configuration in the current working directory.
+
+`$ soup add` - adds a new dependency to the configuration in the current working directory.
+
+`$ soup install` - reads the configuration in the current working directory, creates a virtualenv at that directory and installs the dependencies specified.
 
 ### disclaimer
 

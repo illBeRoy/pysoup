@@ -13,3 +13,15 @@ class Parser(object):
 
     def parse(self, string):
         return yaml.load(string)
+
+    def dump_to_file(self, configuration, path):
+        yaml_data = self.dump(configuration)
+        with open(path, 'wb') as f:
+            f.write(yaml_data)
+
+    def dump(self, configuration):
+        yaml_string = ''
+        for key in ['name', 'author', 'version', 'repositories', 'dependencies']:
+            if configuration.has_key(key):
+                yaml_string += yaml.dump({key: configuration[key]}, default_flow_style=False)
+        return yaml_string

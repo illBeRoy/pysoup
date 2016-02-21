@@ -3,11 +3,11 @@ from setuptools import setup, find_packages
 
 
 setup(name='pysoup',
-      version='0.1.0',
+      version='0.1.1',
       description='Package management in a bowl',
       author='Roy Sommer',
       url='https://www.github.com/illberoy/pysoup',
-      download_url='https://github.com/illberoy/pysoup/tarball/0.1.0',
+      download_url='https://github.com/illberoy/pysoup/tarball/0.1.1',
       packages=find_packages(),
       include_package_data=True,
       scripts=['soup.py'],

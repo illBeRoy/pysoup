@@ -1,6 +1,6 @@
 name: 'pysoup'
 author: 'Roy Sommer'
-version: '0.1.0'
+version: '0.1.1'
 repository: 'https://www.github.com/illberoy/pysoup'
 dependencies:
   Twisted: '15.5.0'

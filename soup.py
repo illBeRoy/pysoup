@@ -26,8 +26,9 @@ def main():
     cmd_init.add_argument('-r', '--repository', help='project repository', required=False, default='')
 
     cmd_add = commands.add_parser('add', help='add a dependency to the yaml file')
-    cmd_add.add_argument('name', help='name of the dependency')
-    cmd_add.add_argument('version', help='version of the dependency')
+    cmd_add.add_argument('name', help='name of the dependency', nargs='?')
+    cmd_add.add_argument('version', help='version of the dependency', nargs='?')
+    cmd_add.add_argument('-r', '--from-requirements', help='import dependencies from pip requirements.txt file', action='store_true')
 
     cmd_set = commands.add_parser('set', help='set a property in the yaml file')
     cmd_set.add_argument('-n', '--name', help='project name', required=False, default='')
@@ -70,13 +71,21 @@ def main():
         target_file = 'soup.yaml'
         is_global = False
         is_quiet = args.quiet
-        custom_configuration = {'dependencies': {args.name: args.version}}
-        pysoup.PySoup.start_with_args('add',
-                                      cwd,
-                                      target_file,
-                                      is_global,
-                                      is_quiet,
-                                      custom_configuration=custom_configuration)
+        if not args.name and not args.from_requirements:
+            print 'at least one argument is required.\nsee: soup {0} -h'.format(args.command)
+        elif args.name and args.from_requirements:
+            print 'cannot do both at the same time.\nsee: soup {0} -h'.format(args.command)
+        else:
+            version = args.version or '*'
+            custom_configuration = {'dependencies': {args.name: version}}
+            from_requirements = args.from_requirements
+            pysoup.PySoup.start_with_args('add',
+                                          cwd,
+                                          target_file,
+                                          is_global,
+                                          is_quiet,
+                                          custom_configuration=custom_configuration,
+                                          from_requirements=from_requirements)
 
 if __name__ == '__main__':
     main()

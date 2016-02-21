@@ -5,9 +5,9 @@
 
 Python is a great language: it is flexible, readable and convenient. It also has a wide variety of tools which allow the distribution and setup of projects.
 
-Unlike other environments (such as nodejs) python projects are not natively encapsulated; in order to create self-contained projects, one has to create a virtualenv environment for them, and install the dependencies from within it, or install the dependencies globally.
+Alas, unlike other development environments (such as nodejs) python projects are not natively encapsulated; in order to create self-contained projects, one has to create a virtualenv environment for them, and install the dependencies from within it, or install the dependencies globally.
 
-pysoup comes to solve exactly that. It easily manages your project's dependendencies by creating a private virtualenv environment for it and managing the dependencies within it.
+pysoup comes to solve exactly that. It easily manages your project's dependendencies by creating a private virtualenv suit for it and managing the dependencies within it using pip.
 
 That allows you to easily migrate your project to other environments without having to take care of creating and preparing their dependencies.
 
@@ -47,7 +47,7 @@ Each dependency should have one of the following versioning notation as its valu
 
 `$ soup set` - change or set the attribute of an existing configuration in the current working directory.
 
-`$ soup add` - adds a new dependency to the configuration in the current working directory.
+`$ soup add` - adds a new dependency to the configuration in the current working directory. this option can also be used in order to import a list of dependencies from an existing requirements.txt file.
 
 `$ soup install` - reads the configuration in the current working directory, creates a virtualenv at that directory and installs the dependencies specified.
 

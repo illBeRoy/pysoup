@@ -47,14 +47,5 @@ class Pip(object):
 
     def _get_pip_complient_string(self, dependency, version=''):
         complient_dependency = dependency
-
-        if version[0] == '*':
-            complient_version = ''
-        elif version[0] == '+':
-            complient_version = '>={0}'.format(version[1:])
-        elif version[0] == '-':
-            complient_version = '<={0}'.format(version[1:])
-        else:
-            complient_version = '=={0}'.format(version)
-
+        complient_version = pysoup.utils.version_notation_soup_to_pip(version)
         return '{0}{1}'.format(complient_dependency, complient_version)

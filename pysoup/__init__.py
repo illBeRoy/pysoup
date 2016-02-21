@@ -67,30 +67,35 @@ class PySoup(object):
         if os.path.exists(target_config_file):
             self._display_pipes['sys'].notify('target file already exists, aborting...')
         else:
-            yield self.set_project_attributes(configuration, target_config_file)
+            yield self._update_project_attributes(configuration, target_config_file)
 
         yield 'completed'
 
     @defer.inlineCallbacks
     def set_project_attributes(self, configuration, target_config_file):
-        new_config = {key: value for key, value in configuration.iteritems() if value}
-
-        try:
-            old_config = self._parser.parse_file(target_config_file)
-
-            for key, value in old_config.iteritems():
-                if not new_config.has_key(key):
-                    new_config[key] = value
-        except:
-            pass
-
-        self._parser.dump_to_file(new_config, target_config_file)
-        self._display_pipes['sys'].success('soup configuration was updated successfuly!')
+        if not os.path.exists(target_config_file):
+            self._display_pipes['sys'].notify('soup configuration does not exists, aborting...')
+        else:
+            yield self._update_project_attributes(configuration, target_config_file)
 
         yield 'completed'
 
     @defer.inlineCallbacks
-    def add_dependency(self, configuration, target_config_file):
+    def add_dependencies_from_pip_requirements(self, pip_requirements_path, target_config_file):
+        configuration = None
+
+        try:
+            configuration = self._parser.parse_pip_requirements(pip_requirements_path)
+        except:
+            self._display_pipes['sys'].notify('could not parse requirements file, aborting...')
+            defer.returnValue(None)
+
+        yield self.add_dependencies(configuration, target_config_file)
+
+        yield 'completed'
+
+    @defer.inlineCallbacks
+    def add_dependencies(self, configuration, target_config_file):
         try:
             target_config = self._parser.parse_file(target_config_file)
 
@@ -112,6 +117,24 @@ class PySoup(object):
 
         yield 'completed'
 
+    @defer.inlineCallbacks
+    def _update_project_attributes(self, configuration, target_config_file):
+        new_config = {key: value for key, value in configuration.iteritems() if value}
+
+        try:
+            old_config = self._parser.parse_file(target_config_file)
+
+            for key, value in old_config.iteritems():
+                if not new_config.has_key(key):
+                    new_config[key] = value
+        except:
+            pass
+
+        self._parser.dump_to_file(new_config, target_config_file)
+        self._display_pipes['sys'].success('soup configuration was updated successfuly!')
+
+        yield 'completed'
+
     def _add_display_pipe(self, pipe_name):
         self._display_pipes[pipe_name] = self._display.create_pipe()
         return self._display_pipes[pipe_name]
@@ -126,7 +149,7 @@ class PySoup(object):
         return pysoup.pip.Pip(self._add_display_pipe('pip'), venv=self._venv)
 
     @staticmethod
-    def start_with_args(command, cwd, target_config_file, is_global=False, is_silent=False, custom_configuration=None):
+    def start_with_args(command, cwd, target_config_file, is_global=False, is_silent=False, custom_configuration=None, from_requirements=False):
         if is_silent:
             display = pysoup.display.DisplayAdapter.create_silent_display()
         else:
@@ -150,7 +173,11 @@ class PySoup(object):
 
         elif command == 'add':
             file_path = os.path.join(cwd, target_config_file)
-            exec_command = soup.add_dependency(custom_configuration, file_path)
+            if from_requirements:
+                pip_requirements_path = os.path.join(cwd, 'requirements.txt')
+                exec_command = soup.add_dependencies_from_pip_requirements(pip_requirements_path, file_path)
+            else:
+                exec_command = soup.add_dependencies(custom_configuration, file_path)
 
 
         exec_command.addCallbacks(PySoup._on_soup_callback, PySoup._on_soup_errback)

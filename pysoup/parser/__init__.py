@@ -21,7 +21,7 @@ class Parser(object):
 
     def dump(self, configuration):
         yaml_string = ''
-        for key in ['name', 'author', 'version', 'repositories', 'dependencies']:
+        for key in ['name', 'author', 'version', 'repository', 'dependencies']:
             if configuration.has_key(key):
                 yaml_string += yaml.dump({key: configuration[key]}, default_flow_style=False)
         return yaml_string

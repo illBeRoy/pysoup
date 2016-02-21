@@ -7,7 +7,11 @@ setup(name='pysoup',
       description='Package management in a bowl',
       author='Roy Sommer',
       url='https://www.github.com/illberoy/pysoup',
+<<<<<<< HEAD
       download_url='https://github.com/illberoy/pysoup/tarball/0.1.1',
+=======
+      download_url='https://github.com/illberoy/pysoup/tarball/0.1.0',
+>>>>>>> master
       packages=find_packages(),
       include_package_data=True,
       scripts=['soup.py'],

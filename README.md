@@ -41,6 +41,10 @@ Each dependency should have one of the following versioning notation as its valu
 
 `*` - will install any version
 
+### getting pysoup
+
+`$ pip install pysoup`
+
 ### usage
 
 `$ soup init` - creates a new soup.yaml configuration file in the current working directory, with the given parameters.
@@ -50,6 +54,12 @@ Each dependency should have one of the following versioning notation as its valu
 `$ soup add` - adds a new dependency to the configuration in the current working directory. this option can also be used in order to import a list of dependencies from an existing requirements.txt file.
 
 `$ soup install` - reads the configuration in the current working directory, creates a virtualenv at that directory and installs the dependencies specified.
+
+### system requirements
+
+pysoup runs on linux and osx.
+
+pysoup is currently **not** supported on windows.
 
 ### disclaimer
 

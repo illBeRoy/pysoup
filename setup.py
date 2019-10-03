@@ -11,5 +11,5 @@ setup(name='pysoup',
       packages=find_packages(),
       include_package_data=True,
       scripts=['soup.py'],
-      install_requires=['Twisted==15.5.0', 'blessings==1.6.0', 'PyYAML==3.11', 'argcomplete==1.0.0', 'requirements-parser==0.1.0'],
+      install_requires=['Twisted==19.7.0', 'blessings==1.6.0', 'PyYAML==3.11', 'argcomplete==1.0.0', 'requirements-parser==0.1.0'],
       entry_points={'console_scripts': ['soup = soup:main']})

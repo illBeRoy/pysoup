@@ -1,3 +1,5 @@
+> This project is old and obsolete. What it attempted to achieve is now done by other, much better tools, such as poetry and pipenv.
+
 # pysoup
 *package managment in a bowl*
 
